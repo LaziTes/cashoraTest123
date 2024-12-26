@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { Upload } from "lucide-react";
 
 const formSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -91,13 +92,19 @@ const Deposit = () => {
                   <FormItem>
                     <FormLabel>Upload Receipt</FormLabel>
                     <FormControl>
-                      <Input
-                        type="file"
-                        accept="image/*,.pdf"
-                        onChange={(e) =>
-                          field.onChange(e.target.files ? e.target.files[0] : null)
-                        }
-                      />
+                      <div className="flex items-center gap-2">
+                        <div className="relative">
+                          <Input
+                            type="file"
+                            accept="image/*,.pdf"
+                            onChange={(e) =>
+                              field.onChange(e.target.files ? e.target.files[0] : null)
+                            }
+                            className="pl-10"
+                          />
+                          <Upload className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

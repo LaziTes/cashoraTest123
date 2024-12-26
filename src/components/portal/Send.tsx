@@ -56,11 +56,11 @@ const Send = () => {
                 name="recipient"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Recipient Email</FormLabel>
+                    <FormLabel>Recipient Email/Username</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="Enter recipient's email"
+                        placeholder="Enter recipient's email or username"
                         {...field}
                       />
                     </FormControl>
