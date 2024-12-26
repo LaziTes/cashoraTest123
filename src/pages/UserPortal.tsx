@@ -2,6 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { LayoutDashboard, Upload, Download, SendHorizontal, MessageSquare } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
 import Dashboard from "@/components/portal/Dashboard";
+import Deposit from "@/components/portal/Deposit";
+import Withdraw from "@/components/portal/Withdraw";
+import Send from "@/components/portal/Send";
+import Support from "@/components/portal/Support";
 import { useState } from "react";
 
 const UserPortal = () => {
@@ -40,7 +44,10 @@ const UserPortal = () => {
 
       <main className="flex-1 p-6">
         {activeTab === "dashboard" && <Dashboard />}
-        {/* Other components will be added in next iterations */}
+        {activeTab === "deposit" && <Deposit />}
+        {activeTab === "withdraw" && <Withdraw />}
+        {activeTab === "send" && <Send />}
+        {activeTab === "support" && <Support />}
       </main>
     </div>
   );
