@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const Navigation = () => {
   return (
@@ -11,14 +12,20 @@ const Navigation = () => {
     >
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center space-x-4">
-          <span className="text-2xl font-bold">Cashora</span>
+          <Link to="/" className="text-2xl font-bold">
+            Cashora
+          </Link>
         </div>
         <nav className="flex items-center space-x-4">
           <Button variant="ghost">Features</Button>
           <Button variant="ghost">About</Button>
           <Button variant="ghost">Contact</Button>
-          <Button variant="outline">Sign In</Button>
-          <Button>Sign Up</Button>
+          <Link to="/signin">
+            <Button variant="outline">Sign In</Button>
+          </Link>
+          <Link to="/signup">
+            <Button>Sign Up</Button>
+          </Link>
         </nav>
       </div>
     </motion.header>
