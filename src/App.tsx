@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import UserPortal from "./pages/UserPortal";
+import AdminSignIn from "./pages/admin/AdminSignIn";
+import AdminPortal from "./pages/admin/AdminPortal";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +23,8 @@ const App = () => (
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/portal" element={<UserPortal />} />
+          <Route path="/admin" element={<AdminSignIn />} />
+          <Route path="/admin/portal/*" element={<AdminPortal />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
