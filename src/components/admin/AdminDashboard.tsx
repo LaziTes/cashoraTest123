@@ -10,8 +10,6 @@ import {
 import {
   Area,
   AreaChart,
-  Bar,
-  BarChart,
   CartesianGrid,
   Legend,
   Line,
@@ -21,6 +19,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { CustomBadge } from "@/components/ui/custom-badge";
 
 const data = [
   { name: "Jan", transactions: 400, users: 240 },
@@ -32,7 +35,18 @@ const data = [
   { name: "Jul", transactions: 349, users: 430 },
 ];
 
+const recentTransactions = [
+  { id: 1, type: "deposit", amount: 500, date: "2024-03-20", user: "John Doe", status: "completed" },
+  { id: 2, type: "withdrawal", amount: -200, date: "2024-03-19", user: "Jane Smith", status: "pending" },
+  { id: 3, type: "send", amount: -150, date: "2024-03-18", user: "Alice Johnson", status: "completed" },
+  { id: 4, type: "deposit", amount: 1000, date: "2024-03-17", user: "Bob Wilson", status: "completed" },
+  { id: 5, type: "withdrawal", amount: -300, date: "2024-03-16", user: "Carol Brown", status: "rejected" },
+];
+
 const AdminDashboard = () => {
+  const [transactionType, setTransactionType] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+
   const stats = [
     {
       title: "Total Users",
@@ -63,6 +77,15 @@ const AdminDashboard = () => {
       trend: "up",
     },
   ];
+
+  const filteredTransactions = recentTransactions.filter(transaction => {
+    const matchesType = transactionType === "all" || transaction.type === transactionType;
+    const matchesSearch = 
+      transaction.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      transaction.amount.toString().includes(searchTerm) ||
+      transaction.date.includes(searchTerm);
+    return matchesType && matchesSearch;
+  });
 
   return (
     <div className="space-y-8">
@@ -145,6 +168,73 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Transactions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4 mb-4">
+            <Select value={transactionType} onValueChange={setTransactionType}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Transaction Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Transactions</SelectItem>
+                <SelectItem value="deposit">Deposits</SelectItem>
+                <SelectItem value="withdrawal">Withdrawals</SelectItem>
+                <SelectItem value="send">Sent Money</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input
+              placeholder="Search transactions..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="max-w-sm"
+            />
+          </div>
+          <ScrollArea className="h-[400px]">
+            <div className="space-y-4">
+              {filteredTransactions.map((transaction) => (
+                <div
+                  key={transaction.id}
+                  className="flex items-center justify-between p-4 rounded-lg border"
+                >
+                  <div className="flex flex-col">
+                    <span className="font-medium">
+                      {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {transaction.user}
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className={`font-bold ${
+                      transaction.amount > 0 ? "text-green-500" : "text-red-500"
+                    }`}>
+                      {transaction.amount > 0 ? "+" : ""}${Math.abs(transaction.amount)}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {new Date(transaction.date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <CustomBadge
+                    variant={
+                      transaction.status === "completed"
+                        ? "success"
+                        : transaction.status === "pending"
+                        ? "warning"
+                        : "destructive"
+                    }
+                  >
+                    {transaction.status}
+                  </CustomBadge>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        </CardContent>
+      </Card>
     </div>
   );
 };
