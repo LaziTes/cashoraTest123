@@ -1,8 +1,13 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { type VariantProps } from "class-variance-authority";
 
-interface CustomBadgeProps extends React.ComponentProps<typeof Badge> {
-  variant?: "outline" | "default" | "destructive" | "secondary" | "success" | "warning";
+type CustomVariant = "success" | "warning";
+type BadgeVariant = VariantProps<typeof Badge>["variant"];
+type CombinedVariant = BadgeVariant | CustomVariant;
+
+interface CustomBadgeProps extends Omit<React.ComponentProps<typeof Badge>, "variant"> {
+  variant?: CombinedVariant;
 }
 
 export function CustomBadge({ className, variant = "default", ...props }: CustomBadgeProps) {
