@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { CustomBadge } from "@/components/ui/custom-badge";
 import { Check, X } from "lucide-react";
 
 interface WithdrawalRequest {
@@ -86,7 +86,7 @@ const WithdrawalRequests = () => {
                 <TableCell>${request.amount.toLocaleString()}</TableCell>
                 <TableCell>{request.date}</TableCell>
                 <TableCell>
-                  <Badge
+                  <CustomBadge
                     variant={
                       request.status === "approved"
                         ? "success"
@@ -96,7 +96,7 @@ const WithdrawalRequests = () => {
                     }
                   >
                     {request.status}
-                  </Badge>
+                  </CustomBadge>
                 </TableCell>
                 <TableCell className="text-right">
                   {request.status === "pending" && (

@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+import { CustomBadge } from "@/components/ui/custom-badge";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -182,14 +182,14 @@ const UsersManagement = () => {
                 </TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>
-                  <Badge
+                  <CustomBadge
                     variant={user.role === "admin" ? "destructive" : "secondary"}
                   >
                     {user.role}
-                  </Badge>
+                  </CustomBadge>
                 </TableCell>
                 <TableCell>
-                  <Badge
+                  <CustomBadge
                     variant={
                       user.status === "approved"
                         ? "success"
@@ -199,7 +199,7 @@ const UsersManagement = () => {
                     }
                   >
                     {user.status}
-                  </Badge>
+                  </CustomBadge>
                 </TableCell>
                 <TableCell className="text-right">
                   <Button variant="ghost" size="icon">

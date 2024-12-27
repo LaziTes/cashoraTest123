@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { CustomBadge } from "@/components/ui/custom-badge";
 import { Check, X } from "lucide-react";
 
 interface SendRequest {
@@ -79,7 +79,7 @@ const SendRequests = () => {
                 <TableCell>${request.amount.toLocaleString()}</TableCell>
                 <TableCell>{request.date}</TableCell>
                 <TableCell>
-                  <Badge
+                  <CustomBadge
                     variant={
                       request.status === "approved"
                         ? "success"
@@ -89,7 +89,7 @@ const SendRequests = () => {
                     }
                   >
                     {request.status}
-                  </Badge>
+                  </CustomBadge>
                 </TableCell>
                 <TableCell className="text-right">
                   {request.status === "pending" && (
