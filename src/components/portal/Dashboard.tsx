@@ -147,33 +147,35 @@ const Dashboard = () => {
               className="max-w-sm"
             />
           </div>
-          <div className="space-y-4">
-            {filteredTransactions.map((transaction) => (
-              <div
-                key={transaction.id}
-                className="flex items-center justify-between p-4 rounded-lg border"
-              >
-                <div className="flex flex-col">
-                  <span className="font-medium">
-                    {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    {transaction.user}
-                  </span>
+          <ScrollArea className="h-[400px]">
+            <div className="space-y-4">
+              {filteredTransactions.map((transaction) => (
+                <div
+                  key={transaction.id}
+                  className="flex items-center justify-between p-4 rounded-lg border"
+                >
+                  <div className="flex flex-col">
+                    <span className="font-medium">
+                      {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {transaction.user}
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className={`font-bold ${
+                      transaction.amount > 0 ? "text-green-500" : "text-red-500"
+                    }`}>
+                      {transaction.amount > 0 ? "+" : ""}${Math.abs(transaction.amount)}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {new Date(transaction.date).toLocaleDateString()}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-col items-end">
-                  <span className={`font-bold ${
-                    transaction.amount > 0 ? "text-green-500" : "text-red-500"
-                  }`}>
-                    {transaction.amount > 0 ? "+" : ""}${Math.abs(transaction.amount)}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    {new Date(transaction.date).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </ScrollArea>
         </CardContent>
       </Card>
     </div>

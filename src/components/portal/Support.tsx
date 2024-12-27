@@ -14,18 +14,21 @@ interface Message {
 }
 
 const commonQuestions = {
-  "how to deposit": "To make a deposit, go to the Deposit tab, enter your details, and upload proof of payment. We accept bank transfers and various payment methods.",
-  "withdrawal process": "Withdrawals can be requested through the Withdraw tab. Processing usually takes 1-2 business days. Minimum withdrawal amount is $10.",
-  "send money": "You can send money to other users via the Send Money tab. Just enter their email/username and the amount you wish to send.",
-  "contact support": "You can reach our support team 24/7 through this chat or email us at support@example.com",
-  "account security": "We use industry-standard encryption and two-factor authentication to protect your account. Enable 2FA in your account settings for extra security.",
+  "deposit": "To make a deposit, go to the Deposit tab and follow these steps:\n1. Enter the amount\n2. Upload proof of payment\n3. Submit the form",
+  "withdraw": "To withdraw funds:\n1. Go to the Withdraw tab\n2. Enter the amount\n3. Select your withdrawal method\n4. Confirm the transaction",
+  "send money": "To send money to another user:\n1. Go to the Send Money tab\n2. Enter the recipient's email or username\n3. Enter the amount\n4. Confirm the transaction",
+  "account": "To manage your account:\n1. Click on your profile icon\n2. Update your information\n3. Enable 2FA for extra security",
+  "contact": "You can reach our support team:\n- Email: support@cashora.com\n- Phone: 1-800-CASHORA\n- Live chat: Available 24/7",
+  "fees": "Our fee structure:\n- Deposits: Free\n- Withdrawals: 1%\n- Money transfers: 0.5%",
+  "security": "We take security seriously:\n- 2FA authentication\n- End-to-end encryption\n- Regular security audits",
+  "limits": "Transaction limits:\n- Minimum deposit: $10\n- Maximum withdrawal: $10,000/day\n- Transfer limit: $5,000/day"
 };
 
 const Support = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "Hello! How can I help you today? You can ask me about deposits, withdrawals, sending money, or account security.",
+      text: "Hello! How can I help you today? You can ask me about:\n- Deposits & Withdrawals\n- Sending Money\n- Account Security\n- Transaction Limits\n- Fees\n- Contact Information",
       sender: "support",
       timestamp: new Date(),
     },
@@ -47,7 +50,7 @@ const Support = () => {
 
     // Check for automated responses
     const lowerMessage = newMessage.toLowerCase();
-    let automatedResponse = "I'll connect you with a support agent who can help you with that.";
+    let automatedResponse = "I'll connect you with a support agent who can help you with that specific issue.";
 
     // Check if the message contains any keywords from commonQuestions
     for (const [keyword, response] of Object.entries(commonQuestions)) {
@@ -96,7 +99,7 @@ const Support = () => {
                         : "bg-muted"
                     }`}
                   >
-                    <p>{message.text}</p>
+                    <p className="whitespace-pre-line">{message.text}</p>
                     <p className="text-xs opacity-70 mt-1">
                       {message.timestamp.toLocaleTimeString()}
                     </p>
