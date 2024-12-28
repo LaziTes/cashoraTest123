@@ -1,5 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { LayoutDashboard, Upload, Download, SendHorizontal, MessageSquare, UserRound, LogOut } from "lucide-react";
+import { 
+  LayoutDashboard, 
+  Upload, 
+  Download, 
+  SendHorizontal, 
+  MessageSquare, 
+  UserRound, 
+  LogOut,
+  Search
+} from "lucide-react";
 import { 
   Sidebar, 
   SidebarContent, 
@@ -17,9 +26,11 @@ import Send from "@/components/portal/Send";
 import Support from "@/components/portal/Support";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const UserPortal = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   const menuItems = [
@@ -31,29 +42,49 @@ const UserPortal = () => {
   ];
 
   const handleLogout = () => {
-    // Add logout logic here
     navigate("/signin");
   };
 
+  const filteredMenuItems = menuItems.filter(item =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50">
-        <Sidebar className="border-r bg-white">
+      <div className="min-h-screen flex w-full bg-navy">
+        <Sidebar className="border-r border-navy-light bg-navy-dark">
           <div className="flex flex-col h-full">
-            <div className="p-4 border-b">
-              <Button variant="ghost" className="w-full flex items-center gap-2 justify-start" onClick={() => setActiveTab("profile")}>
+            <div className="p-4 border-b border-navy-light">
+              <Button 
+                variant="ghost" 
+                className="w-full flex items-center gap-2 justify-start hover:bg-navy-light"
+                onClick={() => setActiveTab("profile")}
+              >
                 <UserRound className="h-5 w-5" />
                 <span>John Doe</span>
               </Button>
+              <div className="mt-4">
+                <div className="relative">
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-8 bg-navy-light border-navy-light focus:border-brand-blue"
+                  />
+                </div>
+              </div>
             </div>
             <SidebarContent>
               <SidebarGroup>
                 <SidebarGroupContent>
-                  {menuItems.map((item) => (
+                  {filteredMenuItems.map((item) => (
                     <SidebarMenuItem key={item.id}>
                       <SidebarMenuButton
                         onClick={() => setActiveTab(item.id)}
-                        className={`flex items-center gap-2 ${activeTab === item.id ? "bg-accent" : ""}`}
+                        className={`flex items-center gap-2 hover:bg-navy-light ${
+                          activeTab === item.id ? "bg-navy-light text-brand-blue" : ""
+                        }`}
                       >
                         <item.icon className="w-4 h-4" />
                         <span>{item.title}</span>
@@ -63,10 +94,10 @@ const UserPortal = () => {
                 </SidebarGroupContent>
               </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter className="mt-auto border-t p-4">
+            <SidebarFooter className="mt-auto border-t border-navy-light p-4">
               <Button 
                 variant="ghost" 
-                className="w-full flex items-center gap-2 text-red-500 hover:text-red-600 hover:bg-red-50"
+                className="w-full flex items-center gap-2 text-red-500 hover:text-red-600 hover:bg-navy-light"
                 onClick={handleLogout}
               >
                 <LogOut className="h-4 w-4" />

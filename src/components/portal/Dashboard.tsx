@@ -70,15 +70,15 @@ const Dashboard = () => {
     <div className="space-y-8 animate-fade-in">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.title}>
+          <Card key={stat.title} className="bg-navy-light border-navy-light">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium text-foreground">
                 {stat.title}
               </CardTitle>
               <stat.icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
+              <div className="text-2xl font-bold text-foreground">{stat.value}</div>
               <p className={`text-xs ${
                 stat.trend === "up" ? "text-green-500" : "text-red-500"
               }`}>
@@ -89,9 +89,9 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <Card>
+      <Card className="bg-navy-light border-navy-light">
         <CardHeader>
-          <CardTitle>Transaction Overview</CardTitle>
+          <CardTitle className="text-foreground">Transaction Overview</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[300px]">
@@ -107,9 +107,9 @@ const Dashboard = () => {
               }}
             >
               <AreaChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" />
+                <YAxis stroke="hsl(var(--muted-foreground))" />
                 <ChartTooltip />
                 <Area
                   type="monotone"
@@ -124,14 +124,14 @@ const Dashboard = () => {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="bg-navy-light border-navy-light">
         <CardHeader>
-          <CardTitle>Transaction History</CardTitle>
+          <CardTitle className="text-foreground">Transaction History</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex gap-4 mb-4">
             <Select value={transactionType} onValueChange={setTransactionType}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] bg-navy border-navy-light">
                 <SelectValue placeholder="Transaction Type" />
               </SelectTrigger>
               <SelectContent>
@@ -145,7 +145,7 @@ const Dashboard = () => {
               placeholder="Search transactions..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-sm"
+              className="max-w-sm bg-navy border-navy-light"
             />
           </div>
           <ScrollArea className="h-[400px]">
@@ -153,10 +153,10 @@ const Dashboard = () => {
               {filteredTransactions.map((transaction) => (
                 <div
                   key={transaction.id}
-                  className="flex items-center justify-between p-4 rounded-lg border"
+                  className="flex items-center justify-between p-4 rounded-lg border border-navy-light bg-navy hover:bg-navy-light transition-colors"
                 >
                   <div className="flex flex-col">
-                    <span className="font-medium">
+                    <span className="font-medium text-foreground">
                       {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
                     </span>
                     <span className="text-sm text-muted-foreground">
