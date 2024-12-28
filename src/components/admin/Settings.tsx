@@ -24,57 +24,7 @@ const Settings = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Transaction Limits</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label>Minimum Withdrawal</Label>
-              <Input
-                type="number"
-                value={settings.withdrawalMinLimit}
-                onChange={(e) =>
-                  setSettings({ ...settings, withdrawalMinLimit: Number(e.target.value) })
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Maximum Withdrawal</Label>
-              <Input
-                type="number"
-                value={settings.withdrawalMaxLimit}
-                onChange={(e) =>
-                  setSettings({ ...settings, withdrawalMaxLimit: Number(e.target.value) })
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Minimum Send Amount</Label>
-              <Input
-                type="number"
-                value={settings.sendMinLimit}
-                onChange={(e) =>
-                  setSettings({ ...settings, sendMinLimit: Number(e.target.value) })
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Maximum Send Amount</Label>
-              <Input
-                type="number"
-                value={settings.sendMaxLimit}
-                onChange={(e) =>
-                  setSettings({ ...settings, sendMaxLimit: Number(e.target.value) })
-                }
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Fee Settings</CardTitle>
+          <CardTitle>Transaction Settings</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
@@ -91,6 +41,7 @@ const Settings = () => {
               }
             />
           </div>
+          
           <div className="space-y-2">
             <Label>
               {settings.isPercentageFee ? "Fee Percentage" : "Fixed Fee Amount"}
@@ -106,6 +57,57 @@ const Settings = () => {
               }
             />
           </div>
+
+          <div className="space-y-2">
+            <Label>Default Transaction Limits</Label>
+            <div className="grid gap-4">
+              <Input
+                type="number"
+                value={settings.withdrawalMinLimit}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    withdrawalMinLimit: Number(e.target.value),
+                  })
+                }
+                placeholder="Minimum Withdrawal"
+              />
+              <Input
+                type="number"
+                value={settings.withdrawalMaxLimit}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    withdrawalMaxLimit: Number(e.target.value),
+                  })
+                }
+                placeholder="Maximum Withdrawal"
+              />
+              <Input
+                type="number"
+                value={settings.sendMinLimit}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    sendMinLimit: Number(e.target.value),
+                  })
+                }
+                placeholder="Minimum Send"
+              />
+              <Input
+                type="number"
+                value={settings.sendMaxLimit}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    sendMaxLimit: Number(e.target.value),
+                  })
+                }
+                placeholder="Maximum Send"
+              />
+            </div>
+          </div>
+
           <Button onClick={handleSave} className="w-full">
             Save Settings
           </Button>

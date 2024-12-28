@@ -17,17 +17,28 @@ export interface User {
   };
   limits?: {
     withdrawal: {
-      min: number;
-      max: number;
+      min: number | null;
+      max: number | null;
     };
     send: {
-      min: number;
-      max: number;
+      min: number | null;
+      max: number | null;
     };
   };
   assignedBanks: number[];
 }
 
-export interface UserRegistration extends Omit<User, "id" | "status" | "role" | "balance" | "customFee" | "limits" | "assignedBanks"> {
+export interface UserRegistration {
+  id: number;
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  dateOfBirth: Date;
+  placeOfBirth: string;
+  residence: string;
+  nationality: string;
   idCard: File;
+  phoneNumber: string;
+  address: string;
 }

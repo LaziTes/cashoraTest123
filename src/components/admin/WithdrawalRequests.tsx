@@ -14,12 +14,15 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { CustomBadge } from "@/components/ui/custom-badge";
 import { Check, X } from "lucide-react";
+import { sendStatusEmail } from "@/utils/emailService";
+import { toast } from "@/hooks/use-toast";
 
 interface WithdrawalRequest {
   id: number;
@@ -27,6 +30,14 @@ interface WithdrawalRequest {
   amount: number;
   date: string;
   status: "pending" | "approved" | "rejected";
+}
+
+interface BankTransactionDetails {
+  reference: string;
+  bankName: string;
+  accountNumber: string;
+  transactionDate: string;
+  notes: string;
 }
 
 const WithdrawalRequests = () => {
@@ -40,20 +51,73 @@ const WithdrawalRequests = () => {
     },
   ]);
 
-  const handleApprove = (id: number) => {
-    setRequests(
-      requests.map((request) =>
-        request.id === id ? { ...request, status: "approved" } : request
-      )
-    );
+  const [selectedRequest, setSelectedRequest] = useState<WithdrawalRequest | null>(
+    null
+  );
+  const [isApproveDialogOpen, setIsApproveDialogOpen] = useState(false);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [bankDetails, setBankDetails] = useState<BankTransactionDetails>({
+    reference: "",
+    bankName: "",
+    accountNumber: "",
+    transactionDate: "",
+    notes: "",
+  });
+
+  const handleApprove = async () => {
+    if (selectedRequest && bankDetails.reference) {
+      await sendStatusEmail(
+        selectedRequest.user,
+        "approved",
+        "withdrawal"
+      );
+      setRequests(
+        requests.map((request) =>
+          request.id === selectedRequest.id
+            ? { ...request, status: "approved" }
+            : request
+        )
+      );
+      setIsApproveDialogOpen(false);
+      setSelectedRequest(null);
+      setBankDetails({
+        reference: "",
+        bankName: "",
+        accountNumber: "",
+        transactionDate: "",
+        notes: "",
+      });
+      toast({
+        title: "Withdrawal Approved",
+        description: "User has been notified via email",
+      });
+    }
   };
 
-  const handleReject = (id: number) => {
-    setRequests(
-      requests.map((request) =>
-        request.id === id ? { ...request, status: "rejected" } : request
-      )
-    );
+  const handleReject = async () => {
+    if (selectedRequest && rejectReason) {
+      await sendStatusEmail(
+        selectedRequest.user,
+        "rejected",
+        "withdrawal",
+        rejectReason
+      );
+      setRequests(
+        requests.map((request) =>
+          request.id === selectedRequest.id
+            ? { ...request, status: "rejected" }
+            : request
+        )
+      );
+      setIsRejectDialogOpen(false);
+      setRejectReason("");
+      setSelectedRequest(null);
+      toast({
+        title: "Withdrawal Rejected",
+        description: "User has been notified via email",
+      });
+    }
   };
 
   return (
@@ -101,39 +165,23 @@ const WithdrawalRequests = () => {
                 <TableCell className="text-right">
                   {request.status === "pending" && (
                     <div className="flex justify-end gap-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant="outline" size="icon">
-                            <Check className="h-4 w-4 text-green-500" />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Approve Withdrawal</DialogTitle>
-                          </DialogHeader>
-                          <div className="space-y-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="reference">
-                                Transaction Reference
-                              </Label>
-                              <Input
-                                id="reference"
-                                placeholder="Enter transaction reference"
-                              />
-                            </div>
-                            <Button
-                              onClick={() => handleApprove(request.id)}
-                              className="w-full"
-                            >
-                              Approve
-                            </Button>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => handleReject(request.id)}
+                        onClick={() => {
+                          setSelectedRequest(request);
+                          setIsApproveDialogOpen(true);
+                        }}
+                      >
+                        <Check className="h-4 w-4 text-green-500" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => {
+                          setSelectedRequest(request);
+                          setIsRejectDialogOpen(true);
+                        }}
                       >
                         <X className="h-4 w-4 text-red-500" />
                       </Button>
@@ -145,6 +193,111 @@ const WithdrawalRequests = () => {
           </TableBody>
         </Table>
       </motion.div>
+
+      <Dialog open={isApproveDialogOpen} onOpenChange={setIsApproveDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Approve Withdrawal</DialogTitle>
+            <DialogDescription>
+              Please enter the bank transaction details
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Transaction Reference</Label>
+              <Input
+                value={bankDetails.reference}
+                onChange={(e) =>
+                  setBankDetails({ ...bankDetails, reference: e.target.value })
+                }
+                placeholder="Enter transaction reference"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Bank Name</Label>
+              <Input
+                value={bankDetails.bankName}
+                onChange={(e) =>
+                  setBankDetails({ ...bankDetails, bankName: e.target.value })
+                }
+                placeholder="Enter bank name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Account Number</Label>
+              <Input
+                value={bankDetails.accountNumber}
+                onChange={(e) =>
+                  setBankDetails({
+                    ...bankDetails,
+                    accountNumber: e.target.value,
+                  })
+                }
+                placeholder="Enter account number"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Transaction Date</Label>
+              <Input
+                type="date"
+                value={bankDetails.transactionDate}
+                onChange={(e) =>
+                  setBankDetails({
+                    ...bankDetails,
+                    transactionDate: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Notes</Label>
+              <Textarea
+                value={bankDetails.notes}
+                onChange={(e) =>
+                  setBankDetails({ ...bankDetails, notes: e.target.value })
+                }
+                placeholder="Enter any additional notes"
+              />
+            </div>
+            <Button
+              onClick={handleApprove}
+              className="w-full"
+              disabled={!bankDetails.reference}
+            >
+              Approve Withdrawal
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reject Withdrawal</DialogTitle>
+            <DialogDescription>
+              Please provide a reason for rejection
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Reason for Rejection</Label>
+              <Textarea
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                placeholder="Enter reason for rejection"
+                rows={4}
+              />
+            </div>
+            <Button
+              onClick={handleReject}
+              className="w-full"
+              disabled={!rejectReason}
+            >
+              Confirm Rejection
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
