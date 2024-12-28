@@ -19,15 +19,38 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+
+interface Bank {
+  id: number;
+  name: string;
+  assignedUsers: number;
+}
+
+interface User {
+  id: number;
+  name: string;
+  isAssigned: boolean;
+}
 
 const Banks = () => {
-  const [banks, setBanks] = useState([
+  const [banks, setBanks] = useState<Bank[]>([
     { id: 1, name: "Bank A", assignedUsers: 150 },
     { id: 2, name: "Bank B", assignedUsers: 89 },
     { id: 3, name: "Bank C", assignedUsers: 234 },
   ]);
 
   const [newBankName, setNewBankName] = useState("");
+  const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
+  const [isAssignUsersOpen, setIsAssignUsersOpen] = useState(false);
+  const [selectAll, setSelectAll] = useState(false);
+
+  // Mock users data - in real app, this would come from your user management system
+  const [users, setUsers] = useState<User[]>([
+    { id: 1, name: "John Doe", isAssigned: false },
+    { id: 2, name: "Jane Smith", isAssigned: false },
+    { id: 3, name: "Bob Johnson", isAssigned: false },
+  ]);
 
   const handleAddBank = () => {
     if (newBankName.trim()) {
@@ -41,6 +64,35 @@ const Banks = () => {
 
   const handleDeleteBank = (id: number) => {
     setBanks(banks.filter((bank) => bank.id !== id));
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    setSelectAll(checked);
+    setUsers(users.map(user => ({ ...user, isAssigned: checked })));
+  };
+
+  const handleUserSelect = (userId: number, checked: boolean) => {
+    setUsers(users.map(user => 
+      user.id === userId ? { ...user, isAssigned: checked } : user
+    ));
+    setSelectAll(users.every(user => 
+      user.id === userId ? checked : user.isAssigned
+    ));
+  };
+
+  const handleSaveAssignments = () => {
+    if (selectedBank) {
+      const assignedCount = users.filter(user => user.isAssigned).length;
+      setBanks(banks.map(bank =>
+        bank.id === selectedBank.id
+          ? { ...bank, assignedUsers: assignedCount }
+          : bank
+      ));
+      setIsAssignUsersOpen(false);
+      setSelectedBank(null);
+      setUsers(users.map(user => ({ ...user, isAssigned: false })));
+      setSelectAll(false);
+    }
   };
 
   return (
@@ -98,7 +150,16 @@ const Banks = () => {
                     {bank.assignedUsers}
                   </div>
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell className="text-right space-x-2">
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setSelectedBank(bank);
+                      setIsAssignUsersOpen(true);
+                    }}
+                  >
+                    Assign Users
+                  </Button>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -112,6 +173,39 @@ const Banks = () => {
           </TableBody>
         </Table>
       </motion.div>
+
+      <Dialog open={isAssignUsersOpen} onOpenChange={setIsAssignUsersOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Assign Users to {selectedBank?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="selectAll"
+                checked={selectAll}
+                onCheckedChange={handleSelectAll}
+              />
+              <Label htmlFor="selectAll">Select All Users</Label>
+            </div>
+            <div className="space-y-2">
+              {users.map((user) => (
+                <div key={user.id} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`user-${user.id}`}
+                    checked={user.isAssigned}
+                    onCheckedChange={(checked) => handleUserSelect(user.id, checked as boolean)}
+                  />
+                  <Label htmlFor={`user-${user.id}`}>{user.name}</Label>
+                </div>
+              ))}
+            </div>
+            <Button onClick={handleSaveAssignments} className="w-full">
+              Save Assignments
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
