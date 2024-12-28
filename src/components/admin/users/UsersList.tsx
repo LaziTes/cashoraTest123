@@ -11,16 +11,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { CustomBadge } from "@/components/ui/custom-badge";
 import { Settings, User } from "lucide-react";
-import { User as UserType } from "@/utils/userTypes";
+import { User as UserType, Bank } from "@/utils/userTypes";
 import { UserDetailsDialog } from "./UserDetailsDialog";
 import { UserManageDialog } from "./UserManageDialog";
 
 interface UsersListProps {
   users: UserType[];
+  banks: Bank[];
   onUpdateUser: (updatedUser: UserType) => void;
 }
 
-export const UsersList = ({ users, onUpdateUser }: UsersListProps) => {
+export const UsersList = ({ users, banks, onUpdateUser }: UsersListProps) => {
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isManageOpen, setIsManageOpen] = useState(false);
@@ -104,6 +105,7 @@ export const UsersList = ({ users, onUpdateUser }: UsersListProps) => {
           />
           <UserManageDialog
             user={selectedUser}
+            banks={banks}
             open={isManageOpen}
             onOpenChange={setIsManageOpen}
             onUpdate={onUpdateUser}

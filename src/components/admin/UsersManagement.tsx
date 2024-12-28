@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UsersList } from "./users/UsersList";
 import { PendingRegistrations } from "./users/PendingRegistrations";
-import { User, UserRegistration } from "@/utils/userTypes";
+import { User, UserRegistration, Bank } from "@/utils/userTypes";
 
 const UsersManagement = () => {
   const [users, setUsers] = useState<User[]>([
@@ -37,6 +37,11 @@ const UsersManagement = () => {
     },
   ]);
 
+  const [banks] = useState<Bank[]>([
+    { id: 1, name: "Bank A" },
+    { id: 2, name: "Bank B" },
+  ]);
+
   const [pendingRegistrations, setPendingRegistrations] = useState<UserRegistration[]>([
     {
       id: 2,
@@ -49,6 +54,8 @@ const UsersManagement = () => {
       residence: "Miami",
       nationality: "USA",
       idCard: new File([], "id-card.jpg"),
+      phoneNumber: "+1234567890",
+      address: "123 Main St",
     },
   ]);
 
@@ -94,7 +101,7 @@ const UsersManagement = () => {
         </TabsList>
 
         <TabsContent value="users">
-          <UsersList users={users} onUpdateUser={handleUpdateUser} />
+          <UsersList users={users} onUpdateUser={handleUpdateUser} banks={banks} />
         </TabsContent>
 
         <TabsContent value="registrations">

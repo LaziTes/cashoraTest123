@@ -42,3 +42,8 @@ export interface UserRegistration {
   phoneNumber: string;
   address: string;
 }
+
+export interface Bank {
+  id: number;
+  name: string;
+}
