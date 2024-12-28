@@ -25,6 +25,15 @@ const transactionHistory = [
   { id: 5, type: "withdraw", amount: -300, date: "2024-01-21", status: "pending", user: "self" },
 ];
 
+const chartConfig = {
+  value: {
+    theme: {
+      light: "#0EA5E9",
+      dark: "#0EA5E9"
+    }
+  }
+};
+
 const Dashboard = () => {
   const [transactionType, setTransactionType] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -101,7 +110,7 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="h-[300px]">
-              <ChartContainer>
+              <ChartContainer config={chartConfig}>
                 <AreaChart data={data}>
                   <defs>
                     <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
