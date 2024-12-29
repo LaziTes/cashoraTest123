@@ -4,11 +4,10 @@ import {
   LayoutDashboard, 
   ArrowDownToLine, 
   ArrowUpFromLine, 
-  Send, 
+  Send as SendIcon, 
   UserRound, 
   LogOut,
   Search,
-  Shield,
 } from "lucide-react";
 import { 
   Sidebar, 
@@ -27,7 +26,6 @@ import Send from "@/components/portal/Send";
 import Support from "@/components/portal/Support";
 import Withdraw from "@/components/portal/Withdraw";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 
 const UserPortal = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -35,7 +33,7 @@ const UserPortal = () => {
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", value: "dashboard" },
     { icon: ArrowDownToLine, label: "Deposit", value: "deposit" },
-    { icon: Send, label: "Send", value: "send" },
+    { icon: SendIcon, label: "Send", value: "send" },
     { icon: ArrowUpFromLine, label: "Withdraw", value: "withdraw" },
     { icon: UserRound, label: "Support", value: "support" },
   ];
@@ -87,16 +85,6 @@ const UserPortal = () => {
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
-                  <SidebarMenuItem>
-                    <Link to="/admin">
-                      <SidebarMenuButton
-                        className="w-full text-muted-foreground hover:bg-[#1A1F2C] hover:text-foreground"
-                      >
-                        <Shield className="h-4 w-4" />
-                        <span>Admin Portal</span>
-                      </SidebarMenuButton>
-                    </Link>
-                  </SidebarMenuItem>
                 </SidebarGroupContent>
               </SidebarGroup>
             </SidebarContent>

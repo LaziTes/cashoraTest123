@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { Shield } from "lucide-react";
 
 const Navigation = () => {
   return (
@@ -20,6 +21,12 @@ const Navigation = () => {
           <Button variant="ghost">Features</Button>
           <Button variant="ghost">About</Button>
           <Button variant="ghost">Contact</Button>
+          <Link to="/admin">
+            <Button variant="ghost" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              Admin
+            </Button>
+          </Link>
           <Link to="/signin">
             <Button variant="outline">Sign In</Button>
           </Link>
