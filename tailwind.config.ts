@@ -52,7 +52,6 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Custom colors for the dark theme
         navy: {
           DEFAULT: "#1A1F2C",
           light: "#232936",

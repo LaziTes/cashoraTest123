@@ -16,7 +16,6 @@ const AdminPortal = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to dashboard by default
     if (window.location.pathname === "/admin/portal") {
       navigate("/admin/portal/dashboard");
     }
@@ -24,8 +23,10 @@ const AdminPortal = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
-        <AdminSidebar />
+      <div className="min-h-screen flex w-full bg-[#0A0D1B]">
+        <div className="hidden md:block">
+          <AdminSidebar />
+        </div>
         <main className="flex-1 p-6 overflow-auto">
           <Routes>
             <Route path="/dashboard" element={<AdminDashboard />} />

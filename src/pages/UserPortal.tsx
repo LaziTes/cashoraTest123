@@ -8,7 +8,6 @@ import {
   UserRound, 
   LogOut,
   Search,
-  MoreVertical
 } from "lucide-react";
 import { 
   Sidebar, 
@@ -18,7 +17,8 @@ import {
   SidebarMenuItem, 
   SidebarMenuButton,
   SidebarProvider,
-  SidebarFooter
+  SidebarFooter,
+  SidebarHeader,
 } from "@/components/ui/sidebar";
 import Dashboard from "@/components/portal/Dashboard";
 import Deposit from "@/components/portal/Deposit";
@@ -53,9 +53,9 @@ const UserPortal = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-[#0A0D1B]">
-        <Sidebar className="border-r border-[#1A1F2C] bg-[#0A0D1B]">
-          <div className="flex flex-col h-full">
-            <div className="p-4 border-b border-[#1A1F2C]">
+        <div className="hidden md:block">
+          <Sidebar className="border-r border-[#1A1F2C] bg-[#0A0D1B]">
+            <SidebarHeader className="p-4 border-b border-[#1A1F2C]">
               <div className="text-2xl font-bold text-brand-orange mb-6">CASHORA</div>
               <Button 
                 variant="ghost" 
@@ -74,7 +74,7 @@ const UserPortal = () => {
                   className="pl-8 bg-[#1A1F2C] border-[#1A1F2C] focus:border-brand-blue"
                 />
               </div>
-            </div>
+            </SidebarHeader>
             <SidebarContent>
               <SidebarGroup>
                 <SidebarGroupContent>
@@ -104,8 +104,8 @@ const UserPortal = () => {
                 <span>Logout</span>
               </Button>
             </SidebarFooter>
-          </div>
-        </Sidebar>
+          </Sidebar>
+        </div>
 
         <main className="flex-1 p-6 overflow-auto">
           {activeTab === "dashboard" && <Dashboard />}
