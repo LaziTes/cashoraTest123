@@ -5,20 +5,37 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { sendEmail } from "@/utils/emailService";
 import { toast } from "@/hooks/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+interface User {
+  id: number;
+  email: string;
+  name: string;
+}
 
 const EmailManagement = () => {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [sendToAll, setSendToAll] = useState(true);
-  const [selectedEmails, setSelectedEmails] = useState("");
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+
+  // Mock users data - replace with actual users data
+  const users: User[] = [
+    { id: 1, email: "john@example.com", name: "John Doe" },
+    { id: 2, email: "jane@example.com", name: "Jane Smith" },
+    { id: 3, email: "alice@example.com", name: "Alice Johnson" },
+  ];
 
   const handleSend = async () => {
     try {
       const emails = sendToAll
-        ? ["all-users@example.com"]
-        : selectedEmails.split(",").map((email) => email.trim());
+        ? users.map((user) => user.email)
+        : users
+            .filter((user) => selectedUsers.includes(user.id))
+            .map((user) => user.email);
 
       for (const email of emails) {
         await sendEmail({
@@ -30,7 +47,7 @@ const EmailManagement = () => {
 
       setSubject("");
       setMessage("");
-      setSelectedEmails("");
+      setSelectedUsers([]);
 
       toast({
         title: "Success",
@@ -61,12 +78,41 @@ const EmailManagement = () => {
 
           {!sendToAll && (
             <div className="space-y-2">
-              <Label>Selected Users (comma-separated emails)</Label>
-              <Input
-                value={selectedEmails}
-                onChange={(e) => setSelectedEmails(e.target.value)}
-                placeholder="user1@example.com, user2@example.com"
-              />
+              <Label>Select Users</Label>
+              <Card>
+                <ScrollArea className="h-[200px] w-full rounded-md border">
+                  <div className="p-4 space-y-4">
+                    {users.map((user) => (
+                      <div
+                        key={user.id}
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id={`user-${user.id}`}
+                          checked={selectedUsers.includes(user.id)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedUsers([...selectedUsers, user.id]);
+                            } else {
+                              setSelectedUsers(
+                                selectedUsers.filter((id) => id !== user.id)
+                              );
+                            }
+                          }}
+                        />
+                        <Label htmlFor={`user-${user.id}`} className="flex-1">
+                          <div className="flex flex-col">
+                            <span>{user.name}</span>
+                            <span className="text-sm text-muted-foreground">
+                              {user.email}
+                            </span>
+                          </div>
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </Card>
             </div>
           )}
 
@@ -92,7 +138,11 @@ const EmailManagement = () => {
           <Button
             onClick={handleSend}
             className="w-full"
-            disabled={!subject || !message || (!sendToAll && !selectedEmails)}
+            disabled={
+              !subject ||
+              !message ||
+              (!sendToAll && selectedUsers.length === 0)
+            }
           >
             Send Email
           </Button>

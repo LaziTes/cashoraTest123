@@ -11,6 +11,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { CustomBadge } from "@/components/ui/custom-badge";
 import { Check, X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { sendStatusEmail } from "@/utils/emailService";
+import { toast } from "@/hooks/use-toast";
 
 interface DepositRequest {
   id: number;
@@ -31,20 +42,49 @@ const DepositRequests = () => {
     },
   ]);
 
-  const handleApprove = (id: number) => {
-    setRequests(
-      requests.map((request) =>
-        request.id === id ? { ...request, status: "approved" } : request
-      )
-    );
+  const [selectedRequest, setSelectedRequest] = useState<DepositRequest | null>(null);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+
+  const handleApprove = async (id: number) => {
+    const request = requests.find((r) => r.id === id);
+    if (request) {
+      await sendStatusEmail(request.user, "approved", "deposit");
+      setRequests(
+        requests.map((request) =>
+          request.id === id ? { ...request, status: "approved" } : request
+        )
+      );
+      toast({
+        title: "Deposit Request Approved",
+        description: "User has been notified via email",
+      });
+    }
   };
 
-  const handleReject = (id: number) => {
-    setRequests(
-      requests.map((request) =>
-        request.id === id ? { ...request, status: "rejected" } : request
-      )
-    );
+  const handleReject = async () => {
+    if (selectedRequest && rejectReason) {
+      await sendStatusEmail(
+        selectedRequest.user,
+        "rejected",
+        "deposit",
+        rejectReason
+      );
+      setRequests(
+        requests.map((request) =>
+          request.id === selectedRequest.id
+            ? { ...request, status: "rejected" }
+            : request
+        )
+      );
+      setIsRejectDialogOpen(false);
+      setRejectReason("");
+      setSelectedRequest(null);
+      toast({
+        title: "Deposit Request Rejected",
+        description: "User has been notified via email",
+      });
+    }
   };
 
   return (
@@ -100,7 +140,10 @@ const DepositRequests = () => {
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => handleReject(request.id)}
+                        onClick={() => {
+                          setSelectedRequest(request);
+                          setIsRejectDialogOpen(true);
+                        }}
                       >
                         <X className="h-4 w-4 text-red-500" />
                       </Button>
@@ -112,6 +155,35 @@ const DepositRequests = () => {
           </TableBody>
         </Table>
       </motion.div>
+
+      <Dialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reject Deposit Request</DialogTitle>
+            <DialogDescription>
+              Please provide a reason for rejection
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Reason for Rejection</Label>
+              <Textarea
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                placeholder="Enter reason for rejection"
+                rows={4}
+              />
+            </div>
+            <Button
+              onClick={handleReject}
+              className="w-full"
+              disabled={!rejectReason}
+            >
+              Confirm Rejection
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

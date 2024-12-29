@@ -10,10 +10,21 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { CustomBadge } from "@/components/ui/custom-badge";
-import { Settings, User } from "lucide-react";
+import { Settings, User, Trash2 } from "lucide-react";
 import { User as UserType, Bank } from "@/utils/userTypes";
 import { UserDetailsDialog } from "./UserDetailsDialog";
 import { UserManageDialog } from "./UserManageDialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "@/hooks/use-toast";
 
 interface UsersListProps {
   users: UserType[];
@@ -25,6 +36,22 @@ export const UsersList = ({ users, banks, onUpdateUser }: UsersListProps) => {
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isManageOpen, setIsManageOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const handleDeleteUser = () => {
+    if (selectedUser) {
+      onUpdateUser({
+        ...selectedUser,
+        status: "deleted",
+      });
+      setIsDeleteDialogOpen(false);
+      setSelectedUser(null);
+      toast({
+        title: "User Deleted",
+        description: "The user has been successfully deleted",
+      });
+    }
+  };
 
   return (
     <motion.div
@@ -90,6 +117,16 @@ export const UsersList = ({ users, banks, onUpdateUser }: UsersListProps) => {
                 >
                   <Settings className="h-4 w-4" />
                 </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    setSelectedUser(user);
+                    setIsDeleteDialogOpen(true);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4 text-red-500" />
+                </Button>
               </TableCell>
             </TableRow>
           ))}
@@ -110,6 +147,22 @@ export const UsersList = ({ users, banks, onUpdateUser }: UsersListProps) => {
             onOpenChange={setIsManageOpen}
             onUpdate={onUpdateUser}
           />
+          <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete User</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete this user? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteUser} className="bg-red-500 hover:bg-red-600">
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </>
       )}
     </motion.div>
