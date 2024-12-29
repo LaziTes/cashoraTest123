@@ -1,13 +1,14 @@
-import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { 
   LayoutDashboard, 
-  Upload, 
-  Download, 
-  SendHorizontal, 
-  MessageSquare, 
+  ArrowDownToLine, 
+  ArrowUpFromLine, 
+  Send, 
   UserRound, 
   LogOut,
   Search,
+  Shield,
 } from "lucide-react";
 import { 
   Sidebar, 
@@ -22,33 +23,26 @@ import {
 } from "@/components/ui/sidebar";
 import Dashboard from "@/components/portal/Dashboard";
 import Deposit from "@/components/portal/Deposit";
-import Withdraw from "@/components/portal/Withdraw";
 import Send from "@/components/portal/Send";
 import Support from "@/components/portal/Support";
+import Withdraw from "@/components/portal/Withdraw";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 
 const UserPortal = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
 
   const menuItems = [
-    { id: "dashboard", title: "Dashboard", icon: LayoutDashboard },
-    { id: "deposit", title: "Deposit", icon: Upload },
-    { id: "withdraw", title: "Withdraw", icon: Download },
-    { id: "send", title: "Send Money", icon: SendHorizontal },
-    { id: "support", title: "Support", icon: MessageSquare },
+    { icon: LayoutDashboard, label: "Dashboard", value: "dashboard" },
+    { icon: ArrowDownToLine, label: "Deposit", value: "deposit" },
+    { icon: Send, label: "Send", value: "send" },
+    { icon: ArrowUpFromLine, label: "Withdraw", value: "withdraw" },
+    { icon: UserRound, label: "Support", value: "support" },
   ];
 
   const handleLogout = () => {
-    navigate("/signin");
+    window.location.href = "/signin";
   };
-
-  const filteredMenuItems = menuItems.filter(item =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <SidebarProvider>
@@ -59,18 +53,18 @@ const UserPortal = () => {
               <div className="text-2xl font-bold text-brand-orange mb-6">CASHORA</div>
               <Button 
                 variant="ghost" 
-                className="w-full flex items-center gap-2 justify-start hover:bg-[#1A1F2C] mb-4"
-                onClick={() => setActiveTab("profile")}
+                className="w-full justify-start mb-4 text-muted-foreground hover:text-foreground hover:bg-[#1A1F2C]"
               >
-                <UserRound className="h-5 w-5" />
-                <span>John Doe</span>
+                <UserRound className="mr-2 h-4 w-4" />
+                <span>John Carter</span>
               </Button>
               <div className="relative">
-                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search 
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" 
+                />
                 <Input
+                  type="search"
                   placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-8 bg-[#1A1F2C] border-[#1A1F2C] focus:border-brand-blue"
                 />
               </div>
@@ -78,29 +72,41 @@ const UserPortal = () => {
             <SidebarContent>
               <SidebarGroup>
                 <SidebarGroupContent>
-                  {filteredMenuItems.map((item) => (
-                    <SidebarMenuItem key={item.id}>
+                  {menuItems.map((item) => (
+                    <SidebarMenuItem key={item.value}>
                       <SidebarMenuButton
-                        onClick={() => setActiveTab(item.id)}
-                        className={`flex items-center gap-2 hover:bg-[#1A1F2C] ${
-                          activeTab === item.id ? "bg-[#1A1F2C] text-brand-orange" : ""
+                        onClick={() => setActiveTab(item.value)}
+                        className={`w-full ${
+                          activeTab === item.value
+                            ? "bg-[#1A1F2C] text-brand-orange"
+                            : "text-muted-foreground hover:bg-[#1A1F2C] hover:text-foreground"
                         }`}
                       >
-                        <item.icon className="w-4 h-4" />
-                        <span>{item.title}</span>
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.label}</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
+                  <SidebarMenuItem>
+                    <Link to="/admin">
+                      <SidebarMenuButton
+                        className="w-full text-muted-foreground hover:bg-[#1A1F2C] hover:text-foreground"
+                      >
+                        <Shield className="h-4 w-4" />
+                        <span>Admin Portal</span>
+                      </SidebarMenuButton>
+                    </Link>
+                  </SidebarMenuItem>
                 </SidebarGroupContent>
               </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter className="mt-auto border-t border-[#1A1F2C] p-4">
-              <Button 
-                variant="ghost" 
-                className="w-full flex items-center gap-2 text-red-500 hover:text-red-600 hover:bg-[#1A1F2C]"
+            <SidebarFooter className="p-4 border-t border-[#1A1F2C]">
+              <Button
                 onClick={handleLogout}
+                variant="ghost"
+                className="w-full justify-start text-red-500 hover:text-red-400 hover:bg-[#1A1F2C]"
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="mr-2 h-4 w-4" />
                 <span>Logout</span>
               </Button>
             </SidebarFooter>
@@ -110,8 +116,8 @@ const UserPortal = () => {
         <main className="flex-1 p-6 overflow-auto">
           {activeTab === "dashboard" && <Dashboard />}
           {activeTab === "deposit" && <Deposit />}
-          {activeTab === "withdraw" && <Withdraw />}
           {activeTab === "send" && <Send />}
+          {activeTab === "withdraw" && <Withdraw />}
           {activeTab === "support" && <Support />}
         </main>
       </div>
