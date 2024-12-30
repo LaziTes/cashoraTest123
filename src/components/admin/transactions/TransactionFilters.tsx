@@ -20,7 +20,7 @@ interface TransactionFiltersProps {
 }
 
 export const TransactionFilters = ({ onFilterChange }: TransactionFiltersProps) => {
-  const [type, setType] = useState<string>("");
+  const [type, setType] = useState<string>("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [minAmount, setMinAmount] = useState("");
@@ -28,7 +28,7 @@ export const TransactionFilters = ({ onFilterChange }: TransactionFiltersProps) 
 
   const handleApplyFilters = () => {
     onFilterChange({
-      type: type || undefined,
+      type: type === "all" ? undefined : type,
       dateFrom: dateFrom || undefined,
       dateTo: dateTo || undefined,
       minAmount: minAmount ? Number(minAmount) : undefined,
@@ -37,7 +37,7 @@ export const TransactionFilters = ({ onFilterChange }: TransactionFiltersProps) 
   };
 
   const handleReset = () => {
-    setType("");
+    setType("all");
     setDateFrom("");
     setDateTo("");
     setMinAmount("");
@@ -55,7 +55,7 @@ export const TransactionFilters = ({ onFilterChange }: TransactionFiltersProps) 
               <SelectValue placeholder="All Types" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Types</SelectItem>
+              <SelectItem value="all">All Types</SelectItem>
               <SelectItem value="deposit">Deposit</SelectItem>
               <SelectItem value="withdrawal">Withdrawal</SelectItem>
               <SelectItem value="send">Send</SelectItem>
