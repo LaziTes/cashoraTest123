@@ -11,9 +11,15 @@ import Banks from "@/components/admin/Banks";
 import EmailManagement from "@/components/admin/EmailManagement";
 import Settings from "@/components/admin/Settings";
 import { useEffect } from "react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
+import AdminProfile from "@/components/admin/profile/AdminProfile";
 
 const AdminPortal = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (window.location.pathname === "/admin/portal") {
@@ -24,10 +30,23 @@ const AdminPortal = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-[#0A0D1B]">
-        <div className="hidden md:block">
-          <AdminSidebar />
-        </div>
-        <main className="flex-1 p-6 overflow-auto">
+        {isMobile ? (
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="fixed top-4 left-4 z-50">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 bg-navy w-72">
+              <AdminSidebar />
+            </SheetContent>
+          </Sheet>
+        ) : (
+          <div className="hidden md:block">
+            <AdminSidebar />
+          </div>
+        )}
+        <main className="flex-1 p-6 overflow-auto md:ml-64">
           <Routes>
             <Route path="/dashboard" element={<AdminDashboard />} />
             <Route path="/users" element={<UsersManagement />} />
@@ -37,6 +56,7 @@ const AdminPortal = () => {
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/banks" element={<Banks />} />
             <Route path="/email" element={<EmailManagement />} />
+            <Route path="/profile" element={<AdminProfile />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>

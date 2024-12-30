@@ -4,6 +4,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { FileIcon, ImageIcon } from "lucide-react";
 
 interface DepositDetailsDialogProps {
   deposit: {
@@ -51,25 +52,42 @@ export const DepositDetailsDialog = ({
           {deposit.receipt && (
             <div>
               <h3 className="font-semibold mb-2">Receipt</h3>
-              <div className="border rounded p-4">
+              <div className="border rounded-lg p-4">
                 <p className="text-sm text-muted-foreground mb-2">
                   Filename: {deposit.receipt.name}
                 </p>
                 {deposit.receipt.type.startsWith("image/") ? (
-                  <img
-                    src={URL.createObjectURL(deposit.receipt)}
-                    alt="Receipt"
-                    className="max-w-full h-auto rounded"
-                  />
+                  <div className="relative aspect-video">
+                    <img
+                      src={URL.createObjectURL(deposit.receipt)}
+                      alt="Receipt"
+                      className="rounded-lg object-contain w-full h-full"
+                    />
+                  </div>
+                ) : deposit.receipt.type === "application/pdf" ? (
+                  <div className="flex items-center gap-2 text-blue-500 hover:text-blue-600">
+                    <FileIcon className="h-5 w-5" />
+                    <a
+                      href={URL.createObjectURL(deposit.receipt)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline"
+                    >
+                      View PDF Receipt
+                    </a>
+                  </div>
                 ) : (
-                  <a
-                    href={URL.createObjectURL(deposit.receipt)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline"
-                  >
-                    View Receipt
-                  </a>
+                  <div className="flex items-center gap-2">
+                    <ImageIcon className="h-5 w-5" />
+                    <a
+                      href={URL.createObjectURL(deposit.receipt)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:text-blue-600 hover:underline"
+                    >
+                      View Receipt
+                    </a>
+                  </div>
                 )}
               </div>
             </div>
