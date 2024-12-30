@@ -38,17 +38,15 @@ const AdminPortal = () => {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="p-0 w-72 bg-navy border-none">
-              <div className="h-full overflow-y-auto">
-                <AdminSidebar />
-              </div>
+              <AdminSidebar />
             </SheetContent>
           </Sheet>
         ) : (
-          <div className="hidden md:block">
+          <div className="hidden md:block w-64 min-h-screen">
             <AdminSidebar />
           </div>
         )}
-        <main className="flex-1 p-6 overflow-auto md:ml-64">
+        <main className="flex-1 p-6">
           <Routes>
             <Route path="/dashboard" element={<AdminDashboard />} />
             <Route path="/users" element={<UsersManagement />} />
