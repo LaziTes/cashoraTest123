@@ -18,11 +18,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, X } from "lucide-react";
+import { Check, X, Eye } from "lucide-react";
 import { CustomBadge } from "@/components/ui/custom-badge";
 import { UserRegistration } from "@/utils/userTypes";
 import { sendStatusEmail } from "@/utils/emailService";
 import { toast } from "@/hooks/use-toast";
+import { RegistrationDetailsDialog } from "./RegistrationDetailsDialog";
 
 interface PendingRegistrationsProps {
   registrations: UserRegistration[];
@@ -36,6 +37,7 @@ export const PendingRegistrations = ({
   const [selectedUser, setSelectedUser] = useState<UserRegistration | null>(null);
   const [rejectReason, setRejectReason] = useState("");
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
 
   const handleApprove = async (user: UserRegistration) => {
     await sendStatusEmail(user.email, "approved", "registration");
@@ -88,6 +90,16 @@ export const PendingRegistrations = ({
                   <Button
                     variant="ghost"
                     size="icon"
+                    onClick={() => {
+                      setSelectedUser(registration);
+                      setIsDetailsDialogOpen(true);
+                    }}
+                  >
+                    <Eye className="h-4 w-4 text-blue-500" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => handleApprove(registration)}
                   >
                     <Check className="h-4 w-4 text-green-500" />
@@ -134,6 +146,14 @@ export const PendingRegistrations = ({
           </div>
         </DialogContent>
       </Dialog>
+
+      {selectedUser && (
+        <RegistrationDetailsDialog
+          registration={selectedUser}
+          open={isDetailsDialogOpen}
+          onOpenChange={setIsDetailsDialogOpen}
+        />
+      )}
     </div>
   );
 };

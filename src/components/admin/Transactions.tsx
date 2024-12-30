@@ -11,6 +11,7 @@ import {
 import { CustomBadge } from "@/components/ui/custom-badge";
 import { ArrowDownToLine, ArrowUpFromLine, Send } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TransactionFilters } from "./transactions/TransactionFilters";
 
 interface Transaction {
   id: number;
@@ -51,6 +52,8 @@ const Transactions = () => {
     },
   ]);
 
+  const [filteredTransactions, setFilteredTransactions] = useState(transactions);
+
   const getTransactionIcon = (type: Transaction["type"]) => {
     switch (type) {
       case "deposit":
@@ -60,6 +63,36 @@ const Transactions = () => {
       case "send":
         return <Send className="h-4 w-4" />;
     }
+  };
+
+  const handleFilterChange = (filters: any) => {
+    let filtered = [...transactions];
+
+    if (filters.type) {
+      filtered = filtered.filter((t) => t.type === filters.type);
+    }
+
+    if (filters.dateFrom) {
+      filtered = filtered.filter(
+        (t) => new Date(t.date) >= new Date(filters.dateFrom)
+      );
+    }
+
+    if (filters.dateTo) {
+      filtered = filtered.filter(
+        (t) => new Date(t.date) <= new Date(filters.dateTo)
+      );
+    }
+
+    if (filters.minAmount) {
+      filtered = filtered.filter((t) => t.amount >= filters.minAmount);
+    }
+
+    if (filters.maxAmount) {
+      filtered = filtered.filter((t) => t.amount <= filters.maxAmount);
+    }
+
+    setFilteredTransactions(filtered);
   };
 
   return (
@@ -122,6 +155,8 @@ const Transactions = () => {
         </Card>
       </div>
 
+      <TransactionFilters onFilterChange={handleFilterChange} />
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -139,7 +174,7 @@ const Transactions = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {transactions.map((transaction) => (
+            {filteredTransactions.map((transaction) => (
               <TableRow key={transaction.id}>
                 <TableCell>
                   <div className="flex items-center gap-2">

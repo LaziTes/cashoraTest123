@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { CustomBadge } from "@/components/ui/custom-badge";
-import { Check, X } from "lucide-react";
+import { Check, X, Eye } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { sendStatusEmail } from "@/utils/emailService";
 import { toast } from "@/hooks/use-toast";
+import { DepositDetailsDialog } from "./deposits/DepositDetailsDialog";
 
 interface DepositRequest {
   id: number;
@@ -29,6 +30,7 @@ interface DepositRequest {
   amount: number;
   date: string;
   status: "pending" | "approved" | "rejected";
+  receipt?: File;
 }
 
 const DepositRequests = () => {
@@ -44,6 +46,7 @@ const DepositRequests = () => {
 
   const [selectedRequest, setSelectedRequest] = useState<DepositRequest | null>(null);
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
 
   const handleApprove = async (id: number) => {
@@ -131,14 +134,24 @@ const DepositRequests = () => {
                   {request.status === "pending" && (
                     <div className="flex justify-end gap-2">
                       <Button
-                        variant="outline"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setSelectedRequest(request);
+                          setIsDetailsDialogOpen(true);
+                        }}
+                      >
+                        <Eye className="h-4 w-4 text-blue-500" />
+                      </Button>
+                      <Button
+                        variant="ghost"
                         size="icon"
                         onClick={() => handleApprove(request.id)}
                       >
                         <Check className="h-4 w-4 text-green-500" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="icon"
                         onClick={() => {
                           setSelectedRequest(request);
@@ -184,6 +197,14 @@ const DepositRequests = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {selectedRequest && (
+        <DepositDetailsDialog
+          deposit={selectedRequest}
+          open={isDetailsDialogOpen}
+          onOpenChange={setIsDetailsDialogOpen}
+        />
+      )}
     </div>
   );
 };

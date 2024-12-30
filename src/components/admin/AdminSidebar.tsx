@@ -85,15 +85,15 @@ const AdminSidebar = () => {
           <div className="h-10 w-10 rounded-full bg-navy-light" />
           <div>
             <p className="font-medium">John Carter</p>
-            <p className="text-sm text-muted-foreground">Account settings</p>
+            <p className="text-sm text-muted-foreground">Profile</p>
           </div>
         </div>
         <SidebarMenu>
           <SidebarMenuItem>
-            <Link to="/admin/portal/settings">
+            <Link to="/admin/portal/profile">
               <SidebarMenuButton className="w-full text-muted-foreground hover:bg-navy-light hover:text-foreground">
                 <Settings className="h-4 w-4" />
-                <span>Settings</span>
+                <span>Profile</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
