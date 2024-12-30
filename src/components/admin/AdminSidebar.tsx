@@ -43,7 +43,7 @@ const AdminSidebar = () => {
   };
 
   return (
-    <Sidebar className="border-r border-navy-light bg-navy">
+    <Sidebar className="border-r border-navy-light bg-navy w-full md:w-64">
       <SidebarHeader className="p-4 border-b border-navy-light">
         <Link to="/admin/portal/dashboard" className="flex items-center space-x-2">
           <span className="text-2xl font-bold text-brand-orange">Cashora</span>
