@@ -37,8 +37,10 @@ const AdminPortal = () => {
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="p-0 bg-navy w-72">
-              <AdminSidebar />
+            <SheetContent side="left" className="p-0 w-72 bg-navy">
+              <div className="h-full overflow-y-auto">
+                <AdminSidebar />
+              </div>
             </SheetContent>
           </Sheet>
         ) : (
